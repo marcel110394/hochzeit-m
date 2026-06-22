@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hochzeit RSVP Dashboard</title>
+
+  <style>
+    :root {
+      --bg: #f6f1e8;
+      --card: #fff;
+      --text: #1d1d1d;
+      --muted: #737373;
+      --gold: #b9934b;
+      --gold-dark: #846527;
+      --green: #2e8b57;
+      --red: #b23b3b;
+      --blue: #2563eb;
+      --border: #e6ded1;
+      --shadow: 0 10px 28px rgba(0, 0, 0, .08);
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: radial-gradient(circle at top, #fff9ec 0%, var(--bg) 45%, #eee5d6 100%);
+      color: var(--text)
+    }
+
+    header {
+      padding: 36px 18px 32px;
+      text-align: center;
+      background: linear-gradient(135deg, #0d0d0d, #2b210e, #5a4218);
+      color: white
+    }
+
+    .omega {
+      font-size: 36px;
+      color: #e4c16b;
+      margin-bottom: 8px;
+      letter-spacing: 2px
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: clamp(27px, 6vw, 46px);
+      line-height: 1.1
+    }
+
+    header p {
+      margin: 12px auto 0;
+      color: #eadab6;
+      max-width: 670px;
+      line-height: 1.45
+    }
+
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 18px
+    }
+
+    .card {
+      background: rgba(255, 255, 255, .96);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow)
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 23px
+    }
+
+    h3 {
+      margin: 18px 0 8px
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+      margin-top: 0
+    }
+
+    label {
+      display: block;
+      margin-top: 13px;
+      font-weight: 700
+    }
+
+    input,
+    select,
+    textarea,
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 7px;
+      border-radius: 13px;
+      border: 1px solid var(--border);
+      font-size: 16px;
+      font-family: inherit
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 86px
+    }
+
+    button {
+      background: var(--gold);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      margin-top: 16px;
+      transition: .18s ease
+    }
+
+    button:hover {
+      background: var(--gold-dark);
+      transform: translateY(-1px)
+    }
+
+    .secondary {
+      background: #222
+    }
+
+    .secondary:hover {
+      background: #000
+    }
+
+    .danger {
+      background: var(--red)
+    }
+
+    .danger:hover {
+      background: #8f2929
+    }
+
+    .ghost {
+      background: transparent;
+      color: #111;
+      border: 1px solid var(--border)
+    }
+
+    .ghost:hover {
+      background: #f5efe3
+    }
+
+    .location-btn {
+      background: #2563eb
+    }
+
+    .location-btn:hover {
+      background: #1d4ed8
+    }
+
+    .location-cta {
+      display: inline-block;
+      margin-top: 18px;
+      background: #2563eb;
+      color: white;
+      padding: 13px 18px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    .location-cta:hover {
+      background: #1d4ed8
+    }
+
+    .grid-two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px
+    }
+
+    .stat {
+      background: #faf7f0;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 15px;
+      text-align: center
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 27px;
+      color: var(--gold);
+      margin-bottom: 3px
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 12px
+    }
+
+    .guest {
+      border: 1px solid var(--border);
+      background: #fffdf8;
+      border-radius: 16px;
+      padding: 14px;
+      margin-top: 10px
+    }
+
+    .guest-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start
+    }
+
+    .status-ja,
+    .status-nein {
+      font-weight: 800;
+      padding: 5px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+      font-size: 14px
+    }
+
+    .status-ja {
+      color: var(--green);
+      background: rgba(46, 139, 87, .10)
+    }
+
+    .status-nein {
+      color: var(--red);
+      background: rgba(178, 59, 59, .10)
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 5px;
+      line-height: 1.4
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 9px
+    }
+
+    .links a {
+      display: inline-block;
+      text-decoration: none;
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      color: white;
+      background: var(--blue)
+    }
+
+    .links a.whatsapp-link {
+      background: #25D366;
+      color: #111
+    }
+
+    .links a.maps-link {
+      background: #2563eb
+    }
+
+    .admin-box {
+      display: none;
+      margin-top: 15px;
+      border-top: 1px solid var(--border);
+      padding-top: 12px
+    }
+
+    .ad {
+      text-align: center;
+      background: linear-gradient(135deg, #111, #2b210e);
+      color: white;
+      border: none
+    }
+
+    .ad strong {
+      color: #e4c16b;
+      font-size: 22px;
+      display: block
+    }
+
+    .ad p {
+      color: #eadab6;
+      line-height: 1.5;
+      margin-bottom: 0
+    }
+
+    .ad a {
+      display: inline-block;
+      margin: 12px 6px 0;
+      color: white;
+      background: var(--gold);
+      padding: 12px 16px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: bold
+    }
+
+    .ad a.whatsapp {
+      background: #25D366;
+      color: #111
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 18px
+    }
+
+    @media(max-width:900px) {
+      .stats {
+        grid-template-columns: 1fr 1fr 1fr
+      }
+    }
+
+    @media(max-width:720px) {
+      .container {
+        padding: 14px
+      }
+
+      .card {
+        padding: 16px;
+        border-radius: 18px
+      }
+
+      .grid-two {
+        grid-template-columns: 1fr
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr
+      }
+
+      .guest-top {
+        flex-direction: column
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="omega">Ω</div>
+    <h1>Hochzeit von NAME & NAME</h1>
+    <p>Bitte gib kurz Bescheid, ob du dabei bist. So können wir Essen, Plätze, Anreise und Ablauf besser planen.</p>
+
+    <!-- HIER HOCHZEITSLOCATION EINTRAGEN:
+       Google Maps öffnen, Standort teilen/kopieren und Link unten ersetzen -->
+    <a class="location-cta"
+      href="https://www.google.com/maps/place/Gasthaus%2FJausenhof+Etzlberger/@48.383688,14.1392457,17z/data=!3m1!4b1!4m6!3m5!1s0x477384cf18b88f47:0xd0979d8ea3fe8c32!8m2!3d48.383688!4d14.1418206!16s%2Fg%2F1tczcq8l?entry=ttu&g_ep=EgoyMDI2MDYxNi4wIKXMDSoASAFQAw%3D%3D"
+      target="_blank">
+      📍 Zur Hochzeitslocation
+    </a>
+  </header>
+
+  <main class="container">
+
+    <section class="card">
+      <h2>Rückmeldung</h2>
+      <p class="hint">
+        Bitte nur einmal absenden. Falls sich etwas ändert, einfach erneut mit gleichem Namen eintragen.
+        Der bestehende Eintrag wird automatisch aktualisiert.
+      </p>
+
+      <label for="name">Name *</label>
+      <input id="name" type="text" placeholder="Vorname Nachname" autocomplete="name" />
+
+      <label for="status">Zusage oder Absage *</label>
+      <select id="status" onchange="toggleVisitorFields()">
+        <option value="Zusage">Ich komme</option>
+        <option value="Absage">Ich komme nicht</option>
+      </select>
+
+      <div id="visitorFields">
+        <div class="grid-two">
+          <div>
+            <label for="adults">Erwachsene</label>
+            <input id="adults" type="number" min="1" max="20" value="1" />
+          </div>
+          <div>
+            <label for="children">Kinder</label>
+            <input id="children" type="number" min="0" max="20" value="0" />
+          </div>
+        </div>
+
+        <label for="food">Essenswunsch</label>
+        <select id="food">
+          <option value="">Bitte auswählen</option>
+          <option value="Normal">Normal</option>
+          <option value="Vegetarisch">Vegetarisch</option>
+          <option value="Vegan">Vegan</option>
+          <option value="Kindergericht">Kindergericht</option>
+          <option value="Sonstiges">Sonstiges / siehe Nachricht</option>
+        </select>
+
+        <label for="hotel">Hotel benötigt?</label>
+        <select id="hotel">
+          <option value="">Bitte auswählen</option>
+          <option value="Nein">Nein</option>
+          <option value="Ja">Ja</option>
+          <option value="Vielleicht">Vielleicht</option>
+        </select>
+
+        <label for="carpool">Fahrgemeinschaft möglich?</label>
+        <select id="carpool">
+          <option value="">Bitte auswählen</option>
+          <option value="Nein">Nein</option>
+          <option value="Ja, ich kann jemanden mitnehmen">Ja, ich kann jemanden mitnehmen</option>
+          <option value="Ja, ich suche eine Mitfahrgelegenheit">Ja, ich suche eine Mitfahrgelegenheit</option>
+        </select>
+      </div>
+
+      <label for="whatsapp">Deine WhatsApp-Nummer optional</label>
+      <input id="whatsapp" type="tel" placeholder="z. B. 0664 1234567" autocomplete="tel" />
+
+      <label for="maps">Standort optional</label>
+      <input id="maps" type="url" placeholder="Google Maps Link wird automatisch eingefügt" />
+      <button type="button" class="location-btn" onclick="useMyLocation()">📍 Meinen Standort automatisch
+        hinzufügen</button>
+      <p class="hint">Am Handy öffnet sich eine Standortfreigabe. Nach Zustimmung wird der Google-Maps-Link automatisch
+        gespeichert.</p>
+
+      <label for="message">Nachricht optional</label>
+      <textarea id="message" placeholder="z. B. Allergien, Begleitung, Anreise, besondere Info..."></textarea>
+
+      <button onclick="saveGuest()">Rückmeldung absenden</button>
+    </section>
+
+    <section class="card">
+      <h2>Übersicht</h2>
+      <div class="stats">
+        <div class="stat"><strong id="totalReplies">0</strong>Rückmeldungen</div>
+        <div class="stat"><strong id="totalConfirmed">0</strong>Zusagen</div>
+        <div class="stat"><strong id="totalDeclines">0</strong>Absagen</div>
+        <div class="stat"><strong id="totalAdults">0</strong>Erwachsene</div>
+        <div class="stat"><strong id="totalChildren">0</strong>Kinder</div>
+        <div class="stat"><strong id="totalVisitors">0</strong>Gäste gesamt</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Teilnehmerliste</h2>
+
+      <label for="search">Suche</label>
+      <input id="search" type="search" placeholder="Name suchen..." oninput="render()" />
+
+      <label for="filter">Filter</label>
+      <select id="filter" onchange="render()">
+        <option value="Alle">Alle anzeigen</option>
+        <option value="Zusage">Nur Zusagen</option>
+        <option value="Absage">Nur Absagen</option>
+        <option value="Hotel">Hotel benötigt</option>
+        <option value="Fahrgemeinschaft">Fahrgemeinschaft</option>
+        <option value="Standort">Mit Standort</option>
+        <option value="WhatsApp">Mit WhatsApp</option>
+      </select>
+
+      <div id="guestList" class="small">Noch keine Einträge vorhanden.</div>
+
+      <button class="ghost" onclick="toggleAdmin()">Admin anzeigen</button>
+
+      <div id="adminBox" class="admin-box">
+        <h3>Admin</h3>
+        <p class="hint">
+          Hinweis: Diese GitHub-Pages-Version speichert Daten lokal im jeweiligen Browser.
+          Für echte zentrale Speicherung auf mehreren Geräten brauchst du später Google Sheets, Firebase oder ein
+          kleines Backend.
+        </p>
+
+        <div class="toolbar">
+          <button class="secondary" onclick="exportCSV()">CSV exportieren</button>
+          <button class="secondary" onclick="exportJSON()">Backup exportieren</button>
+          <button class="danger" onclick="clearData()">Alle Daten löschen</button>
+        </div>
+
+        <label for="importFile">Backup importieren</label>
+        <input id="importFile" type="file" accept=".json" onchange="importJSON(event)" />
+      </div>
+    </section>
+
+    <section class="card ad">
+      <strong>Digitale Einladungen, QR-Codes & einfache Weblösungen</strong>
+      <p>
+        Erstellt von Marcel Christian Aichmayr.
+        Individuelle QR-Code-Seiten, Hochzeits-Dashboards, kleine Business-Websites
+        und KI-gestützte Automatisierungen.
+      </p>
+
+      <a class="whatsapp"
+        href="https://wa.me/436644644439?text=Hallo%20Marcel%2C%20ich%20interessiere%20mich%20f%C3%BCr%20eine%20QR-Code%20oder%20Website-L%C3%B6sung."
+        target="_blank">
+        WhatsApp an Marcel
+      </a>
+
+      <a href="mailto:aichmayr.marcel@gmail.com?subject=Anfrage%20Website%20oder%20QR-Code">
+        Anfrage per E-Mail
+      </a>
+    </section>
+
+  </main>
+
+  <footer>
+    © <span id="year"></span> Marcel Christian Aichmayr · QR-Code & Web-Dashboard
+  </footer>
+
+  <script>
+    const STORAGE_KEY = "weddingGuests_v3";
+    let guests = loadGuests();
+
+    function loadGuests() {
+      try {
+        const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        return Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveToStorage() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(guests));
+    }
+
+    function toggleVisitorFields() {
+      const status = document.getElementById("status").value;
+      document.getElementById("visitorFields").style.display = status === "Absage" ? "none" : "block";
+    }
+
+    function saveGuest() {
+      const name = sanitize(document.getElementById("name").value);
+      const status = document.getElementById("status").value;
+
+      let adults = parseInt(document.getElementById("adults").value, 10) || 0;
+      let children = parseInt(document.getElementById("children").value, 10) || 0;
+
+      const food = sanitize(document.getElementById("food").value);
+      const hotel = sanitize(document.getElementById("hotel").value);
+      const carpool = sanitize(document.getElementById("carpool").value);
+      const whatsapp = sanitize(document.getElementById("whatsapp").value);
+      const maps = sanitize(document.getElementById("maps").value);
+      const message = sanitize(document.getElementById("message").value);
+
+      if (!name || name.length < 2) {
+        alert("Bitte gib deinen Namen ein.");
+        return;
+      }
+
+      if (status === "Absage") {
+        adults = 0;
+        children = 0;
+      }
+
+      if (status === "Zusage" && adults < 1) adults = 1;
+
+      adults = clamp(adults, 0, 20);
+      children = clamp(children, 0, 20);
+
+      if (maps && !isProbablyUrl(maps)) {
+        alert("Bitte gib beim Google Maps Standort einen gültigen Link ein.");
+        return;
+      }
+
+      const normalized = name.toLowerCase().replace(/\s+/g, " ").trim();
+      const existingIndex = guests.findIndex(g => g.normalized === normalized);
+
+      const entry = {
+        id: existingIndex >= 0 ? guests[existingIndex].id : cryptoId(),
+        normalized,
+        name,
+        status,
+        adults,
+        children,
+        totalVisitors: adults + children,
+        food,
+        hotel,
+        carpool,
+        whatsapp,
+        maps,
+        message,
+        updatedAt: new Date().toLocaleString("de-AT")
+      };
+
+      if (existingIndex >= 0) {
+        guests[existingIndex] = entry;
+        alert("Danke, dein bestehender Eintrag wurde aktualisiert.");
+      } else {
+        guests.push(entry);
+        alert("Danke, deine Rückmeldung wurde gespeichert.");
+      }
+
+      saveToStorage();
+      resetForm();
+      render();
+    }
+
+    function resetForm() {
+      document.getElementById("name").value = "";
+      document.getElementById("status").value = "Zusage";
+      document.getElementById("adults").value = 1;
+      document.getElementById("children").value = 0;
+      document.getElementById("food").value = "";
+      document.getElementById("hotel").value = "";
+      document.getElementById("carpool").value = "";
+      document.getElementById("whatsapp").value = "";
+      document.getElementById("maps").value = "";
+      document.getElementById("message").value = "";
+      toggleVisitorFields();
+    }
+
+    function render() {
+      const search = document.getElementById("search")?.value.toLowerCase().trim() || "";
+      const filter = document.getElementById("filter")?.value || "Alle";
+      const list = document.getElementById("guestList");
+
+      const confirmations = guests.filter(g => g.status === "Zusage");
+      const declines = guests.filter(g => g.status === "Absage");
+
+      const totalAdults = confirmations.reduce((sum, g) => sum + Number(g.adults || 0), 0);
+      const totalChildren = confirmations.reduce((sum, g) => sum + Number(g.children || 0), 0);
+
+      document.getElementById("totalReplies").innerText = guests.length;
+      document.getElementById("totalConfirmed").innerText = confirmations.length;
+      document.getElementById("totalDeclines").innerText = declines.length;
+      document.getElementById("totalAdults").innerText = totalAdults;
+      document.getElementById("totalChildren").innerText = totalChildren;
+      document.getElementById("totalVisitors").innerText = totalAdults + totalChildren;
+
+      let filtered = guests.filter(g => !search || g.name.toLowerCase().includes(search));
+
+      if (filter === "Zusage") filtered = filtered.filter(g => g.status === "Zusage");
+      if (filter === "Absage") filtered = filtered.filter(g => g.status === "Absage");
+      if (filter === "Hotel") filtered = filtered.filter(g => g.hotel === "Ja" || g.hotel === "Vielleicht");
+      if (filter === "Fahrgemeinschaft") filtered = filtered.filter(g => g.carpool);
+      if (filter === "Standort") filtered = filtered.filter(g => g.maps);
+      if (filter === "WhatsApp") filtered = filtered.filter(g => g.whatsapp);
+
+      filtered.sort((a, b) => a.name.localeCompare(b.name, "de"));
+
+      if (filtered.length === 0) {
+        list.innerHTML = guests.length === 0 ? "Noch keine Einträge vorhanden." : "Keine passenden Einträge gefunden.";
+        return;
+      }
+
+      list.innerHTML = filtered.map(g => {
+        const whatsappClean = cleanPhoneForWhatsApp(g.whatsapp);
+        const whatsappLink = whatsappClean
+          ? `<a class="whatsapp-link" href="https://wa.me/${whatsappClean}" target="_blank">WhatsApp</a>`
+          : "";
+
+        const mapsLink = g.maps
+          ? `<a class="maps-link" href="${escapeAttribute(g.maps)}" target="_blank">Google Maps</a>`
+          : "";
+
+        return `
+        <div class="guest">
+          <div class="guest-top">
+            <div>
+              <strong>${escapeHTML(g.name)}</strong>
+              <div class="small">
+                ${g.status === "Zusage"
+            ? `${Number(g.adults || 0)} Erwachsene · ${Number(g.children || 0)} Kinder · ${Number(g.totalVisitors || 0)} gesamt`
+            : "0 Personen"}
+              </div>
+            </div>
+            <div class="${g.status === "Zusage" ? "status-ja" : "status-nein"}">${escapeHTML(g.status)}</div>
+          </div>
+
+          ${g.food ? `<div class="small">Essen: ${escapeHTML(g.food)}</div>` : ""}
+          ${g.hotel ? `<div class="small">Hotel: ${escapeHTML(g.hotel)}</div>` : ""}
+          ${g.carpool ? `<div class="small">Fahrgemeinschaft: ${escapeHTML(g.carpool)}</div>` : ""}
+          ${g.whatsapp ? `<div class="small">WhatsApp: ${escapeHTML(g.whatsapp)}</div>` : ""}
+          ${g.message ? `<div class="small">Nachricht: ${escapeHTML(g.message)}</div>` : ""}
+          ${(whatsappLink || mapsLink) ? `<div class="links">${whatsappLink}${mapsLink}</div>` : ""}
+          <div class="small">Aktualisiert: ${escapeHTML(g.updatedAt || "")}</div>
+        </div>
+      `;
+      }).join("");
+    }
+
+    function toggleAdmin() {
+      const box = document.getElementById("adminBox");
+      box.style.display = box.style.display === "block" ? "none" : "block";
+    }
+
+    function exportCSV() {
+      if (!guests.length) return alert("Keine Daten vorhanden.");
+
+      const rows = [
+        ["Name", "Status", "Erwachsene", "Kinder", "Gesamt", "Essenswunsch", "Hotel", "Fahrgemeinschaft", "WhatsApp", "Google Maps", "Nachricht", "Aktualisiert"],
+        ...guests.map(g => [g.name, g.status, g.adults || 0, g.children || 0, g.totalVisitors || 0, g.food || "", g.hotel || "", g.carpool || "", g.whatsapp || "", g.maps || "", g.message || "", g.updatedAt || ""])
+      ];
+
+      const csv = rows.map(row => row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(";")).join("\n");
+      downloadFile(csv, "hochzeit-zusagen.csv", "text/csv;charset=utf-8;");
+    }
+
+    function exportJSON() {
+      if (!guests.length) return alert("Keine Daten vorhanden.");
+      downloadFile(JSON.stringify(guests, null, 2), "hochzeit-zusagen-backup.json", "application/json");
+    }
+
+    function importJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (!Array.isArray(imported)) throw new Error("Ungültiges Format");
+
+          guests = imported.filter(g => g.name && g.status).map(g => {
+            const adults = Number(g.adults || 0);
+            const children = Number(g.children || 0);
+
+            return {
+              id: g.id || cryptoId(),
+              normalized: (g.normalized || g.name.toLowerCase()).trim(),
+              name: sanitize(g.name),
+              status: g.status === "Absage" ? "Absage" : "Zusage",
+              adults,
+              children,
+              totalVisitors: adults + children,
+              food: sanitize(g.food || ""),
+              hotel: sanitize(g.hotel || ""),
+              carpool: sanitize(g.carpool || ""),
+              whatsapp: sanitize(g.whatsapp || ""),
+              maps: sanitize(g.maps || ""),
+              message: sanitize(g.message || ""),
+              updatedAt: g.updatedAt || new Date().toLocaleString("de-AT")
+            };
+          });
+
+          saveToStorage();
+          render();
+          alert("Backup wurde importiert.");
+        } catch {
+          alert("Die Datei konnte nicht importiert werden.");
+        }
+      };
+
+      reader.readAsText(file);
+    }
+
+    function clearData() {
+      if (confirm("Wirklich alle gespeicherten Rückmeldungen löschen?")) {
+        guests = [];
+        localStorage.removeItem(STORAGE_KEY);
+        render();
+      }
+    }
+
+    function downloadFile(content, filename, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function sanitize(value) {
+      return String(value || "").replace(/\s+/g, " ").trim().slice(0, 500);
+    }
+
+    function escapeHTML(str) {
+      return String(str).replace(/[&<>"']/g, match => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+      }[match]));
+    }
+
+    function escapeAttribute(str) {
+      return escapeHTML(str).replace(/`/g, "");
+    }
+
+    function isProbablyUrl(value) {
+      return /^https?:\/\/.+/i.test(value);
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function cleanPhoneForWhatsApp(phone) {
+      if (!phone) return "";
+      let clean = String(phone).replace(/[^\d+]/g, "");
+      if (clean.startsWith("+")) clean = clean.slice(1);
+      if (clean.startsWith("00")) clean = clean.slice(2);
+      if (clean.startsWith("0")) clean = "43" + clean.slice(1);
+      return clean;
+    }
+
+    function useMyLocation() {
+      if (!navigator.geolocation) {
+        alert("Dein Gerät unterstützt keine automatische Standortfreigabe.");
+        return;
+      }
+
+      const button = document.querySelector(".location-btn");
+      const oldText = button.innerText;
+      button.innerText = "Standort wird ermittelt...";
+      button.disabled = true;
+
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          const mapsUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+          document.getElementById("maps").value = mapsUrl;
+
+          button.innerText = oldText;
+          button.disabled = false;
+
+          alert("Standort wurde hinzugefügt.");
+        },
+        function (error) {
+          button.innerText = oldText;
+          button.disabled = false;
+
+          if (error.code === 1) {
+            alert("Standortfreigabe wurde abgelehnt.");
+          } else {
+            alert("Standort konnte nicht ermittelt werden.");
+          }
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
+    }
+
+    function cryptoId() {
+      if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+      return "id-" + Date.now() + "-" + Math.random().toString(16).slice(2);
+    }
+
+    document.getElementById("year").innerText = new Date().getFullYear();
+    toggleVisitorFields();
+    render();
+  </script>
+
+</body>
+
+</html>
