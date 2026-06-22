@@ -287,6 +287,30 @@
       padding-top: 12px
     }
 
+    .admin-login {
+      margin-top: 12px;
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+      display: none;
+    }
+
+    .admin-private {
+      display: none;
+    }
+
+    .admin-status {
+      font-weight: 700;
+      margin-top: 10px;
+    }
+
+    .logout-btn {
+      background: #555;
+    }
+
+    .logout-btn:hover {
+      background: #333;
+    }
+
     .ad {
       text-align: center;
       background: linear-gradient(135deg, #111, #2b210e);
@@ -466,32 +490,47 @@
     </section>
 
     <section class="card">
-      <h2>Teilnehmerliste</h2>
+      <h2>Adminbereich</h2>
+      <p class="hint">
+        Die Teilnehmerliste und Exporte sind geschützt. Gäste sehen nur das Formular.
+      </p>
 
-      <label for="search">Suche</label>
-      <input id="search" type="search" placeholder="Name suchen..." oninput="render()" />
+      <button class="ghost" onclick="toggleAdminLogin()">Admin Login anzeigen</button>
 
-      <label for="filter">Filter</label>
-      <select id="filter" onchange="render()">
-        <option value="Alle">Alle anzeigen</option>
-        <option value="Zusage">Nur Zusagen</option>
-        <option value="Absage">Nur Absagen</option>
-        <option value="Hotel">Hotel benötigt</option>
-        <option value="Fahrgemeinschaft">Fahrgemeinschaft</option>
-        <option value="Standort">Mit Standort</option>
-        <option value="WhatsApp">Mit WhatsApp</option>
-      </select>
+      <div id="adminLogin" class="admin-login">
+        <label for="adminUser">Nutzername</label>
+        <input id="adminUser" type="text" placeholder="Nutzername" autocomplete="username" />
 
-      <div id="guestList" class="small">Noch keine Einträge vorhanden.</div>
+        <label for="adminPass">Passwort</label>
+        <input id="adminPass" type="password" placeholder="Passwort" autocomplete="current-password" />
 
-      <button class="ghost" onclick="toggleAdmin()">Admin anzeigen</button>
+        <button onclick="adminLogin()">Einloggen</button>
+        <div id="adminLoginStatus" class="small admin-status"></div>
+      </div>
 
-      <div id="adminBox" class="admin-box">
-        <h3>Admin</h3>
+      <div id="adminPrivate" class="admin-private">
+        <h3>Teilnehmerliste</h3>
+
+        <label for="search">Suche</label>
+        <input id="search" type="search" placeholder="Name suchen..." oninput="render()" />
+
+        <label for="filter">Filter</label>
+        <select id="filter" onchange="render()">
+          <option value="Alle">Alle anzeigen</option>
+          <option value="Zusage">Nur Zusagen</option>
+          <option value="Absage">Nur Absagen</option>
+          <option value="Hotel">Hotel benötigt</option>
+          <option value="Fahrgemeinschaft">Fahrgemeinschaft</option>
+          <option value="Standort">Mit Standort</option>
+          <option value="WhatsApp">Mit WhatsApp</option>
+        </select>
+
+        <div id="guestList" class="small">Noch keine Einträge vorhanden.</div>
+
+        <h3>Admin Tools</h3>
         <p class="hint">
           Hinweis: Diese GitHub-Pages-Version speichert Daten lokal im jeweiligen Browser.
-          Für echte zentrale Speicherung auf mehreren Geräten brauchst du später Google Sheets, Firebase oder ein
-          kleines Backend.
+          Für echte zentrale Speicherung auf mehreren Geräten brauchst du später Google Sheets, Firebase oder ein kleines Backend.
         </p>
 
         <div class="toolbar">
@@ -502,6 +541,8 @@
 
         <label for="importFile">Backup importieren</label>
         <input id="importFile" type="file" accept=".json" onchange="importJSON(event)" />
+
+        <button class="logout-btn" onclick="adminLogout()">Ausloggen</button>
       </div>
     </section>
 
@@ -703,9 +744,53 @@
       }).join("");
     }
 
-    function toggleAdmin() {
-      const box = document.getElementById("adminBox");
-      box.style.display = box.style.display === "block" ? "none" : "block";
+    const ADMIN_USER = "maic";
+    const ADMIN_PASS = "1234";
+    let adminLoggedIn = sessionStorage.getItem("weddingAdminLoggedIn") === "true";
+
+    function toggleAdminLogin() {
+      const loginBox = document.getElementById("adminLogin");
+
+      if (adminLoggedIn) {
+        showAdminPrivate();
+        return;
+      }
+
+      loginBox.style.display = loginBox.style.display === "block" ? "none" : "block";
+    }
+
+    function adminLogin() {
+      const user = document.getElementById("adminUser").value.trim();
+      const pass = document.getElementById("adminPass").value.trim();
+      const status = document.getElementById("adminLoginStatus");
+
+      if (user === ADMIN_USER && pass === ADMIN_PASS) {
+        adminLoggedIn = true;
+        sessionStorage.setItem("weddingAdminLoggedIn", "true");
+        status.innerText = "";
+        showAdminPrivate();
+        render();
+      } else {
+        status.innerText = "Login falsch.";
+        status.style.color = "#b23b3b";
+      }
+    }
+
+    function showAdminPrivate() {
+      document.getElementById("adminLogin").style.display = "none";
+      document.getElementById("adminPrivate").style.display = "block";
+      render();
+    }
+
+    function adminLogout() {
+      adminLoggedIn = false;
+      sessionStorage.removeItem("weddingAdminLoggedIn");
+      document.getElementById("adminPrivate").style.display = "none";
+      document.getElementById("adminLogin").style.display = "block";
+      document.getElementById("adminUser").value = "";
+      document.getElementById("adminPass").value = "";
+      document.getElementById("adminLoginStatus").innerText = "Ausgeloggt.";
+      document.getElementById("adminLoginStatus").style.color = "#737373";
     }
 
     function exportCSV() {
@@ -865,6 +950,11 @@
 
     document.getElementById("year").innerText = new Date().getFullYear();
     toggleVisitorFields();
+
+    if (adminLoggedIn) {
+      showAdminPrivate();
+    }
+
     render();
   </script>
 
